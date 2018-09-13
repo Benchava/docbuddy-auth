@@ -1,6 +1,6 @@
 # DocBuddy-Auth
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/02bc6ce9a4584d5fb2a9ce20194929b3)](https://www.codacy.com/app/nbantar/docbuddy-auth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nbantar/docbuddy-auth&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/nbantar/DocBuddy.svg?branch=master)](https://travis-ci.org/nbantar/DocBuddy)
+[![Build Status](https://travis-ci.org/nbantar/docbuddy-auth.svg?branch=master)](https://travis-ci.org/nbantar/docbuddy-auth)
 An authentication service for the DocBuddy test app.
 
 Note: This is a continuous WORK IN PROGRESS.
