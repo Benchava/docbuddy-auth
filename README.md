@@ -14,7 +14,7 @@ serve as a way of having a centralized clinical history for them.
 
 ## TECHNOLOGIES
 
-DocBuddy is built using Java 8, Gradle, Spring-Boot, Lombok and Firebase among other technologies.
+DocBuddy is built using Java 8, Gradle, Spring-Boot, Lombok and Google Cloud SQL among other technologies.
 
 
 ## HOW TO RUN IT

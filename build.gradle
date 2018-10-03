@@ -1,47 +1,77 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
-        classpath("se.transmode.gradle:gradle-docker:1.2")
-    }
+	ext {
+		springBootVersion = '2.0.5.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'application'
-apply plugin: 'docker'
+apply plugin: "jacoco"
 
-bootJar {
-    baseName = 'docbuddy-auth'
-    group = 'docbuddy'
-    version = '0.1.0'
-    manifest { attributes "Main-Class": "docbuddy.auth.Application" }
-}
+
+group = 'com.docbuddy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-mainClassName = 'docbuddy.auth.Application'
+
+ext {
+	springCloudGcpVersion = '1.0.0.RELEASE'
+	springCloudVersion = 'Finchley.SR1'
+}
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile("com.google.firebase:firebase-admin:5.3.1")
-    compileOnly("org.projectlombok:lombok:1.18.2")
-    compile("org.apache.httpcomponents:httpcore:4.4.1")
-    compile("org.apache.httpcomponents:httpclient:4.5")
-    compile("org.yaml:snakeyaml:1.18")
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.cloud:spring-cloud-gcp-starter')
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	compileOnly('org.projectlombok:lombok')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
-docker {
-    baseImage "frolvlad/alpine-oraclejdk8:slim"
-    maintainer 'Nicolas Bantar "nicobantar87@gmail.com"'
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
+
+test {
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+    }
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'docbuddy/users/config/session/*',
+                    'docbuddy/users/model/*',
+                    'docbuddy/users/Application.class'
+            ])
+        })
+    }
+}
+check.dependsOn jacocoTestCoverageVerification
