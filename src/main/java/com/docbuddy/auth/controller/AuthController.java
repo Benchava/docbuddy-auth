@@ -99,11 +99,8 @@ public class AuthController {
 
 		Date expirationDate = calendar.getTime();
 
-		if (expirationDate.before(today)) {
-			return false;
-		}
+		return (expirationDate.before(today));
 
-		return true;
 	}
 
 }
